@@ -54,26 +54,26 @@ def share_of_arrestees(df):
     share_rearrested_for_felony = df['y'].mean()
     print(f"\n{share_rearrested_for_felony:.2%} of arrestees were rearrested for a felony crime in the following year.")
 
-def main():
-    pred_universe_df, arrest_events_df = load_data()
-    df_arrests = merge_data(pred_universe_df,arrest_events_df)
-    merge_data(pred_universe_df, arrest_events_df)
-    add_y_column(df_arrests)
+# def main():
+#     pred_universe_df, arrest_events_df = load_data()
+#     df_arrests = merge_data(pred_universe_df,arrest_events_df)
+#     merge_data(pred_universe_df, arrest_events_df)
+#     add_y_column(df_arrests)
     
-    print("Pred Universe DataFrame:")
-    print(pred_universe_df.head())
+#     print("Pred Universe DataFrame:")
+#     print(pred_universe_df.head())
         
-    print("\nArrest Events DataFrame:")
-    print(arrest_events_df.head())
+#     print("\nArrest Events DataFrame:")
+#     print(arrest_events_df.head())
     
-    print("\nMerged DataFrame (df_arrests):")
-    print(df_arrests.head(500))
+#     print("\nMerged DataFrame (df_arrests):")
+#     print(df_arrests.head(500))
     
-    print("\nMerged DataFrame (df_arrests) with 'y' column:")
-    print(df_arrests.head())
+#     print("\nMerged DataFrame (df_arrests) with 'y' column:")
+#     print(df_arrests.head())
     
-    share_of_arrestees(df_arrests)
+#     share_of_arrestees(df_arrests)
 
     
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
