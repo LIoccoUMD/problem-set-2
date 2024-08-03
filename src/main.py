@@ -17,6 +17,7 @@ def main():
     pred_universe_raw, arrest_events_raw = part1_etl.etl_process()
     # PART 2: Call functions/instanciate objects from preprocessing
     part2_preprocessing.preprocess_data()
+    df = part2_preprocessing
     # PART 3: Call functions/instanciate objects from logistic_regression
 
     # PART 4: Call functions/instanciate objects from decision_tree

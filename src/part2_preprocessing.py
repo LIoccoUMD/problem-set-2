@@ -62,20 +62,26 @@ def add_current_charge_felony(df):
     print(f"\n{felony_share_of_charges:.2%} of charges are felonies.")
     return df
 
-    # Add num_fel_arrests_last_year column
-# def add_num_fel_arrests_last_year(df):
-#     df['num_fel_arrests_last_year'] = df.apply(
-#         lambda row: any(
-#             (df['person_id'] == row['person_id']) &
-#             (df['arrest_date_event'] < row['arrest_date_event']) &
-#             (df['arrest_date_event'] >= row['arrest_date_event'] - pd.Timedelta(days=365)) &
-#             (df['charge_degree'] == 'felony')
-#         ),
-#         axis=1
-#     )
-#     average_fel_arrests_last_year = df['num_fel_arrests_last_year'].mean()
-#     print(f"\nThe average number of felony arrests in the last year is{average_fel_arrests_last_year}.")
-#     return df
+def add_num_fel_arrests_last_year(df):
+    df['arrest_date_event'] = pd.to_datetime(df['arrest_date_event'])
+
+    # Create the column 'num_fel_arrests_last_year'
+    df['num_fel_arrests_last_year'] = df.apply(
+        lambda row: df[
+            (df['person_id'] == row['person_id']) &
+            (df['arrest_date_event'] < row['arrest_date_event']) &
+            (df['arrest_date_event'] >= row['arrest_date_event'] - pd.Timedelta(days=365)) &
+            (df['charge_degree'] == 'felony')
+        ].shape[0],
+        axis=1
+    )
+    
+    # Print the average number of felony arrests in the last year
+    # average_fel_arrests_last_year = df['num_fel_arrests_last_year'].mean()
+    # print(f"\nThe average number of felony arrests in the last year is {average_fel_arrests_last_year:.2f}.")
+    
+    return df
+
 
 def preprocess_data():
     pred_universe_df, arrest_events_df = load_data()
@@ -83,5 +89,8 @@ def preprocess_data():
     df_arrests = add_y_column(df_arrests)
     share_of_arrestees(df_arrests)
     df_arrests = add_current_charge_felony(df_arrests)
-    print(df_arrests)
-    # df_arrests = add_num_fel_arrests_last_year(df_arrests)
+    df_arrests = add_num_fel_arrests_last_year(df_arrests)
+    print(f"\nThe mean of 'num_fel_arrests_last_year' is {df_arrests['num_fel_arrests_last_year'].mean():.2f}")
+    print("\npred_universe_df.head():")
+    print(pred_universe_df.head())
+    return df_arrests
