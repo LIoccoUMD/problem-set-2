@@ -16,10 +16,7 @@ def main():
     # PART 1: Instanciate etl, saving the two datasets in `./data/`
     pred_universe_raw, arrest_events_raw = part1_etl.etl_process()
     # PART 2: Call functions/instanciate objects from preprocessing
-    pred_universe_df, arrest_events_df = part2_preprocessing.load_data()
-    df_arrests = part2_preprocessing.merge_data(pred_universe_df,arrest_events_df)
-    part2_preprocessing.add_y_column(df_arrests)
-    part2_preprocessing.share_of_arrestees(df_arrests)
+    part2_preprocessing.preprocess_data()
     # PART 3: Call functions/instanciate objects from logistic_regression
 
     # PART 4: Call functions/instanciate objects from decision_tree

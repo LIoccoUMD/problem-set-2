@@ -53,27 +53,33 @@ def share_of_arrestees(df):
     # Calculate the share of arrestees rearrested for a felony within the following year
     share_rearrested_for_felony = df['y'].mean()
     print(f"\n{share_rearrested_for_felony:.2%} of arrestees were rearrested for a felony crime in the following year.")
+    return share_rearrested_for_felony
+    
+    # Add current_charge_felony column
+def add_feature1(df):
+    df["current_charge_felony"] = df["charge_degree"].map({"felony": 1, "misdemeanor": 0})
+    felony_share_of_charges = df['current_charge_felony'].mean()
+    print(f"\n{felony_share_of_charges:.2%} of charges are felonies.")
+    return felony_share_of_charges
 
-# def main():
-#     pred_universe_df, arrest_events_df = load_data()
-#     df_arrests = merge_data(pred_universe_df,arrest_events_df)
-#     merge_data(pred_universe_df, arrest_events_df)
-#     add_y_column(df_arrests)
-    
-#     print("Pred Universe DataFrame:")
-#     print(pred_universe_df.head())
-        
-#     print("\nArrest Events DataFrame:")
-#     print(arrest_events_df.head())
-    
-#     print("\nMerged DataFrame (df_arrests):")
-#     print(df_arrests.head(500))
-    
-#     print("\nMerged DataFrame (df_arrests) with 'y' column:")
-#     print(df_arrests.head())
-    
-#     share_of_arrestees(df_arrests)
+    # Add num_fel_arrests_last_year column
+# def add_feature2(df):
+#     df['num_fel_arrests_last_year'] = df.apply(
+#         lambda row: df[
+#             (df['person_id'] == row['person_id']) &
+#             (df['arrest_date_event'] < row['arrest_date_event']) &
+#             (df['arrest_date_event'] >= row['arrest_date_event'] - pd.Timedelta(days=365)) &
+#             (df['charge_degree'] == 'felony')
+#         ].shape[0],
+#         axis=1
+#     )
+#     return df
 
-    
-# if __name__ == "__main__":
-#     main()
+def preprocess_data():
+    pred_universe_df, arrest_events_df = load_data()
+    df_arrests = merge_data(pred_universe_df, arrest_events_df)
+    df_arrests = add_y_column(df_arrests)
+    share_of_arrestees(df_arrests)
+    df_arrests = add_feature1(df_arrests)
+    # df_arrests = add_feature2(df_arrests)
+    return df_arrests
