@@ -13,13 +13,27 @@ PART 3: Logistic Regression
 '''
 
 # Import any further packages you may need for PART 3
+import sys
+import os
 import pandas as pd
 import numpy as np
+from part2_preprocessing import preprocess_data
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.linear_model import LogisticRegression as lr
 
+class SuppressPrint:
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
 
-# Your code here
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout
 
-
+# Read in df from part2 directly
+def load_data():
+    with SuppressPrint():
+        df_arrests = preprocess_data()
+    print(df_arrests)
+    return df_arrests
