@@ -30,12 +30,12 @@ def merge_data(df1, df2):
     return df_arrests
 
 def add_y_column(df):
-    # Ensure arrest dates are datetime objects
+    # Make dates datetime objects
     df['arrest_date_univ'] = pd.to_datetime(df['arrest_date_univ'])
     df['arrest_date_event'] = pd.to_datetime(df['arrest_date_event'])
 
-    # Create a new column 'felony_within_365_days'
-    df['felony_within_365_days'] = df.apply(
+    # Create the column 'felony_within_365_days'
+    df['y'] = df.apply(
         lambda row: any(
             (df['person_id'] == row['person_id']) &
             (df['arrest_date_event'] > row['arrest_date_event']) &
@@ -46,7 +46,7 @@ def add_y_column(df):
     )
 
     # Map 'felony_within_365_days' to 'y'
-    df['y'] = df['felony_within_365_days'].map({True: 1, False: 0})
+    df['y'] = df['y'].map({True: 1, False: 0})
     return df
 
 def share_of_arrestees(df):
@@ -56,23 +56,25 @@ def share_of_arrestees(df):
     return share_rearrested_for_felony
     
     # Add current_charge_felony column
-def add_feature1(df):
+def add_current_charge_felony(df):
     df["current_charge_felony"] = df["charge_degree"].map({"felony": 1, "misdemeanor": 0})
     felony_share_of_charges = df['current_charge_felony'].mean()
     print(f"\n{felony_share_of_charges:.2%} of charges are felonies.")
-    return felony_share_of_charges
+    return df
 
     # Add num_fel_arrests_last_year column
-# def add_feature2(df):
+# def add_num_fel_arrests_last_year(df):
 #     df['num_fel_arrests_last_year'] = df.apply(
-#         lambda row: df[
+#         lambda row: any(
 #             (df['person_id'] == row['person_id']) &
 #             (df['arrest_date_event'] < row['arrest_date_event']) &
 #             (df['arrest_date_event'] >= row['arrest_date_event'] - pd.Timedelta(days=365)) &
 #             (df['charge_degree'] == 'felony')
-#         ].shape[0],
+#         ),
 #         axis=1
 #     )
+#     average_fel_arrests_last_year = df['num_fel_arrests_last_year'].mean()
+#     print(f"\nThe average number of felony arrests in the last year is{average_fel_arrests_last_year}.")
 #     return df
 
 def preprocess_data():
@@ -80,6 +82,6 @@ def preprocess_data():
     df_arrests = merge_data(pred_universe_df, arrest_events_df)
     df_arrests = add_y_column(df_arrests)
     share_of_arrestees(df_arrests)
-    df_arrests = add_feature1(df_arrests)
-    # df_arrests = add_feature2(df_arrests)
-    return df_arrests
+    df_arrests = add_current_charge_felony(df_arrests)
+    print(df_arrests)
+    # df_arrests = add_num_fel_arrests_last_year(df_arrests)
