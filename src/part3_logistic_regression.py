@@ -64,6 +64,11 @@ def optimal_C(gs_cv, param_grid):
     print(f"Did it have the most or least regularization?\n\tIt had the {regularization} regularization.")
     return best_c
 
+def predict_test_C(gs_cv, x_test, df_arrests_test):
+    pred_lr = gs_cv.predict(x_test)
+    df_arrests_test["pred_lr"] = pred_lr
+    return df_arrests_test
+    
 
     #Change main to logistic_regression when finished.
 def main():
@@ -75,6 +80,9 @@ def main():
     features, param_grid, lr_model, gs_cv = prepare_and_run_model(x_train,y_train)
     print("Parameter grid:", param_grid)
     optimal_C(gs_cv,param_grid)
+    x_test = df_arrests_test[["current_charge_felony", "num_fel_arrests_last_year"]]
+    predict_test_C(gs_cv,x_test,df_arrests_test)
+    print(df_arrests_test)
     print("GridSearchCV run completed.")
     
     
