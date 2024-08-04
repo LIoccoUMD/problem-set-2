@@ -71,30 +71,15 @@ def predict_test_C(gs_cv, x_test, df_arrests_test):
     
 
     #Change main to logistic_regression when finished.
-def main():
+def logistic_regression():
     df_arrests = load_data()
-    # print("Columns in df_arrests: ", df_arrests.columns.tolist())
     df_arrests_train, df_arrests_test = split_data(df_arrests)
     x_train = df_arrests_train[["current_charge_felony", "num_fel_arrests_last_year"]]
     y_train = df_arrests_train['y']
     features, param_grid, lr_model, gs_cv = prepare_and_run_model(x_train,y_train)
     print("Parameter grid:", param_grid)
-    optimal_C(gs_cv,param_grid)
+    best_c = optimal_C(gs_cv,param_grid)
     x_test = df_arrests_test[["current_charge_felony", "num_fel_arrests_last_year"]]
     predict_test_C(gs_cv,x_test,df_arrests_test)
-    print(df_arrests_test)
-    print("GridSearchCV run completed.")
-    
-    
-    # print("Training DataFrame:")
-    # print(df_arrests_train)
-    # print("\nTesting DataFrame:")
-    # print(df_arrests_test)
-    
-    # print("Features:", features)
-    # print("Logistic Regression model initialized.")
-    # print("GridSearchCV initialized with 5-fold cross-validation.")
-    return df_arrests_train, df_arrests_test, features, param_grid, lr_model, gs_cv
-
-if __name__ == "__main__":
-    main()
+    print(df_arrests_test["pred_lr"])
+    return df_arrests_train, df_arrests_test, features, param_grid, lr_model, gs_cv, best_c

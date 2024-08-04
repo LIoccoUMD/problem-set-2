@@ -13,6 +13,36 @@ PART 4: Decision Trees
 # Import any further packages you may need for PART 4
 import pandas as pd
 import numpy as np
+import part3_logistic_regression
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.model_selection import StratifiedKFold as KFold_strat
 from sklearn.tree import DecisionTreeClassifier as DTC
+
+def decision_tree_model(df_train, df_test, features):
+    param_grid_dt = {'max_depth':[3,5,7]}
+    dt_model = DTC()
+    gs_cv_dt = GridSearchCV(estimator=dt_model, param_grid=param_grid_dt, cv=5)
+    x_train = df_train[features]
+    y_train = df_train['y']
+    gs_cv_dt.fit(x_train,y_train)
+    
+    # Predictions
+    x_test = df_test[features]
+    pred_dt = gs_cv_dt.predict(x_test)
+    df_test["pred_dt"] = pred_dt
+    return df_test, gs_cv_dt
+
+def decision_tree():
+    
+    df_arrests_train, df_arrests_test, features, param_grid, lr_model, gs_cv, best_c = part3_logistic_regression.logistic_regression()
+    
+
+    df_arrests_test, gs_cv_dt = decision_tree_model(df_arrests_train, df_arrests_test, features)
+    print(df_arrests_test)
+    
+
+    best_params_dt = gs_cv_dt.best_params_
+    best_depth = best_params_dt['max_depth']
+    print(f"\nWhat was the optimal tree depth?\n\tThe optimal tree depth is {best_depth}.")
+    
+    return df_arrests_test, gs_cv_dt
