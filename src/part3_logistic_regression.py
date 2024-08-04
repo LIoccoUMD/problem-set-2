@@ -37,3 +37,40 @@ def load_data():
         df_arrests = preprocess_data()
     print(df_arrests)
     return df_arrests
+
+def split_data(df):
+    df_arrests_train, df_arrests_test = train_test_split(df, test_size=0.3, shuffle=True, stratify=df['y'])
+    return df_arrests_train, df_arrests_test
+
+def prepare_and_run_model():
+    features = ["current_charge_felony", "num_fel_arrests_last_year"]
+    param_grid = {"C": [0.1,1,10]}
+    lr_model = lr()
+    gs_cv = GridSearchCV(estimator=lr_model, param_grid=param_grid, cv=5)
+    return features, param_grid, lr_model, gs_cv
+
+    #Change main to logistic_regression when finished.
+def main():
+    df_arrests = load_data()
+    print("Columns in df_arrests: ", df_arrests.columns.tolist())
+    df_arrests_train, df_arrests_test = split_data(df_arrests)
+    features, param_grid, lr_model, gs_cv = prepare_and_run_model()
+    
+    x_train = df_arrests_train[features]
+    y_train = df_arrests_train['y']
+    gs_cv.fit(x_train,y_train)
+    
+    print("Training DataFrame:")
+    print(df_arrests_train)
+    print("\nTesting DataFrame:")
+    print(df_arrests_test)
+    
+    print("Features:", features)
+    print("Parameter grid:", param_grid)
+    print("Logistic Regression model initialized.")
+    print("GridSearchCV initialized with 5-fold cross-validation.")
+    print("GridSearchCV run completed.")
+    return df_arrests_train, df_arrests_test, features, param_grid, lr_model, gs_cv
+
+if __name__ == "__main__":
+    main()

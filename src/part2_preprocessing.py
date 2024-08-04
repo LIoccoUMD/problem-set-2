@@ -75,11 +75,6 @@ def add_num_fel_arrests_last_year(df):
         ].shape[0],
         axis=1
     )
-    
-    # Print the average number of felony arrests in the last year
-    # average_fel_arrests_last_year = df['num_fel_arrests_last_year'].mean()
-    # print(f"\nThe average number of felony arrests in the last year is {average_fel_arrests_last_year:.2f}.")
-    
     return df
 
 

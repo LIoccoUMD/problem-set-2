@@ -18,7 +18,7 @@ def main():
     # PART 2: Call functions/instanciate objects from preprocessing
     part2_preprocessing.preprocess_data()
     # PART 3: Call functions/instanciate objects from logistic_regression
-    part3_logistic_regression.load_data()
+    part3_logistic_regression.calculate_logistic_regression()
     # PART 4: Call functions/instanciate objects from decision_tree
 
     # PART 5: Call functions/instanciate objects from calibration_plot
