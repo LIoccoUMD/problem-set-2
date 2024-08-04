@@ -42,34 +42,50 @@ def split_data(df):
     df_arrests_train, df_arrests_test = train_test_split(df, test_size=0.3, shuffle=True, stratify=df['y'])
     return df_arrests_train, df_arrests_test
 
-def prepare_and_run_model():
+def prepare_and_run_model(x_train,y_train):
     features = ["current_charge_felony", "num_fel_arrests_last_year"]
-    param_grid = {"C": [0.1,1,10]}
+    param_grid = {"C": [0.1,0.3,0.6]}
     lr_model = lr()
     gs_cv = GridSearchCV(estimator=lr_model, param_grid=param_grid, cv=5)
+    gs_cv.fit(x_train,y_train)
     return features, param_grid, lr_model, gs_cv
+
+def optimal_C(gs_cv, param_grid):
+    best_params = gs_cv.best_params_
+    best_c = best_params['C']
+    
+    if best_c == min(param_grid['C']):
+        regularization = 'most'
+    elif best_c == max(param_grid['C']):
+        regularization = 'least'
+    else:
+        regularization = 'in the middle'
+    print(f"\nWhat was the optimal value for C?\n\tThe optimal value for C is {best_c}.")
+    print(f"Did it have the most or least regularization?\n\tIt had the {regularization} regularization.")
+    return best_c
+
 
     #Change main to logistic_regression when finished.
 def main():
     df_arrests = load_data()
-    print("Columns in df_arrests: ", df_arrests.columns.tolist())
+    # print("Columns in df_arrests: ", df_arrests.columns.tolist())
     df_arrests_train, df_arrests_test = split_data(df_arrests)
-    features, param_grid, lr_model, gs_cv = prepare_and_run_model()
-    
-    x_train = df_arrests_train[features]
+    x_train = df_arrests_train[["current_charge_felony", "num_fel_arrests_last_year"]]
     y_train = df_arrests_train['y']
-    gs_cv.fit(x_train,y_train)
-    
-    print("Training DataFrame:")
-    print(df_arrests_train)
-    print("\nTesting DataFrame:")
-    print(df_arrests_test)
-    
-    print("Features:", features)
+    features, param_grid, lr_model, gs_cv = prepare_and_run_model(x_train,y_train)
     print("Parameter grid:", param_grid)
-    print("Logistic Regression model initialized.")
-    print("GridSearchCV initialized with 5-fold cross-validation.")
+    optimal_C(gs_cv,param_grid)
     print("GridSearchCV run completed.")
+    
+    
+    # print("Training DataFrame:")
+    # print(df_arrests_train)
+    # print("\nTesting DataFrame:")
+    # print(df_arrests_test)
+    
+    # print("Features:", features)
+    # print("Logistic Regression model initialized.")
+    # print("GridSearchCV initialized with 5-fold cross-validation.")
     return df_arrests_train, df_arrests_test, features, param_grid, lr_model, gs_cv
 
 if __name__ == "__main__":
